@@ -3,10 +3,10 @@ import { Badge } from './ui/badge'
 import { Button } from './ui/button'
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { APPLICATION_API_END_POINT, JOB_API_END_POINT } from '@/utils/constant';
 import { setSingleJob } from '@/redux/jobSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'sonner';
+const apiUrl = import.meta.env.VITE_BASE_URL
 
 const JobDescription = () => {
     const {singleJob} = useSelector(store => store.job);
@@ -20,7 +20,7 @@ const JobDescription = () => {
 
     const applyJobHandler = async () => {
         try {
-            const res = await axios.get(`${APPLICATION_API_END_POINT}/apply/${jobId}`, {withCredentials:true});
+            const res = await axios.get(`${apiUrl}/api/v1/application/apply/${jobId}`, {withCredentials:true});
             
             if(res.data.success){
                 setIsApplied(true); // Update the local state
@@ -38,7 +38,7 @@ const JobDescription = () => {
     useEffect(()=>{
         const fetchSingleJob = async () => {
             try {
-                const res = await axios.get(`${JOB_API_END_POINT}/get/${jobId}`,{withCredentials:true});
+                const res = await axios.get(`${apiUrl}/api/v1/job/get/${jobId}`,{withCredentials:true});
                 if(res.data.success){
                     dispatch(setSingleJob(res.data.job));
                     setIsApplied(res.data.job.applications.some(application=>application.applicant === user?._id)) // Ensure the state is in sync with fetched data
